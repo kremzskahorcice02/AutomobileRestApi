@@ -36,4 +36,8 @@ public class Producer {
     this.country = country;
     this.releasedModels = new ArrayList<>();
   }
+
+  public void addNewModel(Model model) {
+    this.releasedModels.add(model);
+  }
 }

@@ -1,5 +1,6 @@
 package com.example.automobilerestapiapp.models;
 
+import com.example.automobilerestapiapp.dtos.StoreModelRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -45,5 +46,15 @@ public class Model {
     this.releaseYear = releaseYear;
     this.isActive = isActive;
     this.mobilesManufactured = new ArrayList<>();
+  }
+
+  public void setNewProperties(StoreModelRequest newData, Producer producer) {
+    this.producer = producer;
+    this.name = newData.getName();
+    this.category = newData.getCategory();
+    this.minPrice = newData.getMinPrice();
+    this.maxPrice = newData.getMaxPrice();
+    this.releaseYear = newData.getReleaseYear();
+    this.isActive = newData.getIsActive();
   }
 }

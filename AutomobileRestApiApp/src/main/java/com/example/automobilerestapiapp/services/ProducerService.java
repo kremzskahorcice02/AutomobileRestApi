@@ -2,9 +2,7 @@ package com.example.automobilerestapiapp.services;
 
 import com.example.automobilerestapiapp.dtos.ProducerResponse;
 import com.example.automobilerestapiapp.dtos.StoreProducerRequest;
-import com.example.automobilerestapiapp.models.Producer;
 import java.util.List;
-import java.util.Optional;
 
 public interface ProducerService {
 

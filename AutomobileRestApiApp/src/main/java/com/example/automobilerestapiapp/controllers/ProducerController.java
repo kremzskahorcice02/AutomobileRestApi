@@ -48,7 +48,7 @@ public class ProducerController {
     return ResponseEntity.ok().body(producerService.updateOrSaveNew(newProdDto,id));
   }
 
-  @DeleteMapping("producers/{id}")
+  @DeleteMapping("/{id}")
   public ResponseEntity<ProducerResponse> deleteProducer(@PathVariable Long id) {
     return ResponseEntity.ok().body(producerService.deleteById(id));
   }

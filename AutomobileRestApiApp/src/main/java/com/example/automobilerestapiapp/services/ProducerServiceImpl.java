@@ -22,9 +22,9 @@ public class ProducerServiceImpl implements ProducerService{
 
   @Override
   public List<ProducerResponse> getAll() {
-    List<ProducerResponse> producerResponses = new ArrayList<>();
-    producerRepository.findAll().forEach(p -> producerResponses.add(ProducerMapper.toProdResponse(p)));
-    return producerResponses;
+    List<ProducerResponse> producersResponse = new ArrayList<>();
+    producerRepository.findAll().forEach(p -> producersResponse.add(ProducerMapper.toProdResponse(p)));
+    return producersResponse;
   }
 
   @Override

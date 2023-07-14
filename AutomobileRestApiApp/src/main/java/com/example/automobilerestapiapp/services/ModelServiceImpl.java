@@ -1,13 +1,10 @@
 package com.example.automobilerestapiapp.services;
 
 import com.example.automobilerestapiapp.dtos.ModelResponse;
-import com.example.automobilerestapiapp.dtos.ProducerResponse;
 import com.example.automobilerestapiapp.dtos.StoreModelRequest;
-import com.example.automobilerestapiapp.dtos.StoreProducerRequest;
 import com.example.automobilerestapiapp.exceptions.InvalidUserInput;
 import com.example.automobilerestapiapp.exceptions.RecordNotFoundException;
 import com.example.automobilerestapiapp.mappers.ModelMapper;
-import com.example.automobilerestapiapp.mappers.ProducerMapper;
 import com.example.automobilerestapiapp.models.Model;
 import com.example.automobilerestapiapp.models.Producer;
 import com.example.automobilerestapiapp.repositories.ModelRepository;
@@ -68,18 +65,15 @@ public class ModelServiceImpl implements ModelService{
     Long producerId = newModel.getProducerId();
     Producer producer = producerRepository.getProducerById(producerId).orElseThrow(()-> new RecordNotFoundException(id));
 
-    ModelResponse modelResponse = modelRepository.getModelById(id)
-        .map(mod -> {
-          mod.setNewProperties(newModel, producer);
-          producer.addNewModel(mod);
-          modelRepository.save(mod);
+    return modelRepository.getModelById(id)
+        .map(model -> {
+          model.setNewProperties(newModel, producer);
+          producer.addNewModel(model);
+          modelRepository.save(model);
           producerRepository.save(producer);
-          return ModelMapper.toModelResponse(mod);
+          return ModelMapper.toModelResponse(model);
         })
-        .orElseGet(() -> {
-          return insert(newModel);
-        });
-    return modelResponse;
+        .orElseGet(() -> insert(newModel));
   }
   @Override
   public ModelResponse deleteById(Long id) {

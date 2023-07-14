@@ -49,21 +49,12 @@ public class ProducerServiceImpl implements ProducerService{
 
   @Override
   public ProducerResponse updateOrSaveNew(StoreProducerRequest newProducer, Long id) {
-    Producer producer = producerRepository.getProducerById(id)
+    return producerRepository.getProducerById(id)
         .map(prod -> {
-          prod.setName(newProducer.getName());
-          prod.setStreet(newProducer.getStreet());
-          prod.setCity(newProducer.getCity());
-          prod.setZipCode(newProducer.getZipCode());
-          prod.setCountry(newProducer.getCountry());
-
+          prod.setNewProperties(newProducer);
           producerRepository.save(prod);
-          return prod;
+          return ProducerMapper.toProdResponse(prod);
         })
-        .orElseGet(() -> {
-          insert(newProducer);
-          return ProducerMapper.fromStoreProdRequest(newProducer);
-        });
-    return ProducerMapper.toProdResponse(producer);
+        .orElseGet(() -> insert(newProducer));
   }
 }

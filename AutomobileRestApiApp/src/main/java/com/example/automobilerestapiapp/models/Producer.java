@@ -1,5 +1,6 @@
 package com.example.automobilerestapiapp.models;
 
+import com.example.automobilerestapiapp.dtos.StoreProducerRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +38,13 @@ public class Producer {
     this.releasedModels = new ArrayList<>();
   }
 
+  public void setNewProperties(StoreProducerRequest newData) {
+    this.setName(newData.getName());
+    this.setStreet(newData.getStreet());
+    this.setCity(newData.getCity());
+    this.setZipCode(newData.getZipCode());
+    this.setCountry(newData.getCountry());
+  }
   public void addNewModel(Model model) {
     this.releasedModels.add(model);
   }

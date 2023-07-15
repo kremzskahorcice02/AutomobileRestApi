@@ -34,14 +34,6 @@ public class ProducerServiceImpl implements ProducerService{
   }
 
   @Override
-  public ProducerResponse deleteById(Long id) {
-    if (!producerRepository.existsById(id)) {
-      throw new RecordNotFoundException(id);
-    }
-    return ProducerMapper.toProdResponse(producerRepository.deleteProducerById(id));
-  }
-
-  @Override
   public ProducerResponse insert(StoreProducerRequest newProducer) {
     Producer producer = producerRepository.save(ProducerMapper.fromStoreProdRequest(newProducer));
     return ProducerMapper.toProdResponse(producer);
@@ -56,5 +48,13 @@ public class ProducerServiceImpl implements ProducerService{
           return ProducerMapper.toProdResponse(prod);
         })
         .orElseGet(() -> insert(newProducer));
+  }
+
+  @Override
+  public ProducerResponse deleteById(Long id) {
+    if (!producerRepository.existsById(id)) {
+      throw new RecordNotFoundException(id);
+    }
+    return ProducerMapper.toProdResponse(producerRepository.deleteProducerById(id));
   }
 }

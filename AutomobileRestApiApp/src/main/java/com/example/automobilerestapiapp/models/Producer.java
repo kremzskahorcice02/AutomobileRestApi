@@ -1,6 +1,7 @@
 package com.example.automobilerestapiapp.models;
 
 import com.example.automobilerestapiapp.dtos.StoreProducerRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class Producer {
   private String city;
   private String zipCode;
   private String country;
-  @OneToMany(fetch = FetchType.LAZY, mappedBy="producer")
+  @OneToMany(mappedBy="producer",cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<Model> releasedModels;
 
   public Producer(String name, String street, String city, String zipCode, String country) {
@@ -47,5 +48,9 @@ public class Producer {
   }
   public void addNewModel(Model model) {
     this.releasedModels.add(model);
+  }
+
+  public void removeModel(Model model) {
+    this.releasedModels.remove(model);
   }
 }

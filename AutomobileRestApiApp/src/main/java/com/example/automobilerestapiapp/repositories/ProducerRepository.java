@@ -11,5 +11,4 @@ public interface ProducerRepository extends JpaRepository<Producer,Long> {
   boolean existsById(Long id);
 
   Optional<Producer> getProducerById(Long id);
-  Producer deleteProducerById(Long id);
 }

@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -24,8 +26,9 @@ public class Model {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long Id;
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="producer_id", nullable=false)
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private Producer producer;
   private String name;
   private String category;

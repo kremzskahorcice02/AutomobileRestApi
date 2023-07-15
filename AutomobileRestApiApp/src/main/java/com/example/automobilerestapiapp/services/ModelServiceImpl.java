@@ -12,6 +12,7 @@ import com.example.automobilerestapiapp.repositories.ProducerRepository;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +24,13 @@ public class ModelServiceImpl implements ModelService{
 
   private final ProducerRepository producerRepository;
 
+  private final ProducerService producerService;
+
   @Autowired
-  public ModelServiceImpl(ModelRepository modelRepository, ProducerRepository producerRepository) {
+  public ModelServiceImpl(ModelRepository modelRepository, ProducerRepository producerRepository, ProducerService producerService) {
     this.modelRepository = modelRepository;
     this.producerRepository = producerRepository;
+    this.producerService = producerService;
   }
 
   @Override
@@ -44,33 +48,36 @@ public class ModelServiceImpl implements ModelService{
 
   @Override
   public ModelResponse insert(StoreModelRequest newModel) {
-    if (newModel.getReleaseYear() > Year.now().getValue()) {
-      throw new InvalidUserInput("Release year can not be higher than current year");
-    }
-
-    Optional<Producer> producerOpt = producerRepository.getProducerById(newModel.getProducerId());
-    if (producerOpt.isEmpty()) {
-      throw new RecordNotFoundException(newModel.getProducerId());
-    }
-
-    Producer producer = producerOpt.get();
+    validateReleaseYear(newModel.getReleaseYear());
+    Producer producer = producerService.getProducerEntity(newModel.getProducerId());
     Model model = ModelMapper.fromStoreModelRequest(newModel,producer);
-    producerRepository.save(producer);
     modelRepository.save(model);
+    producer.addNewModel(model);
+    producerRepository.save(producer);
+
     return ModelMapper.toModelResponse(model);
   }
 
   @Override
   public ModelResponse updateOrSaveNew(StoreModelRequest newModel, Long id) {
-    Long producerId = newModel.getProducerId();
-    Producer producer = producerRepository.getProducerById(producerId).orElseThrow(()-> new RecordNotFoundException(id));
-
     return modelRepository.getModelById(id)
         .map(model -> {
-          model.setNewProperties(newModel, producer);
-          producer.addNewModel(model);
+          validateReleaseYear(newModel.getReleaseYear());
+
+          Long newProducerId = newModel.getProducerId();
+          Producer currentProducer;
+          if (!newProducerId.equals(model.getProducer().getId())) {
+            currentProducer = producerService.getProducerEntity(newProducerId);
+            Producer oldProducer = model.getProducer();
+            oldProducer.removeModel(model);
+            currentProducer.addNewModel(model);
+          } else {
+            currentProducer = model.getProducer();
+          }
+          model.setNewProperties(newModel, currentProducer);
           modelRepository.save(model);
-          producerRepository.save(producer);
+          producerRepository.save(currentProducer);
+
           return ModelMapper.toModelResponse(model);
         })
         .orElseGet(() -> insert(newModel));
@@ -80,6 +87,13 @@ public class ModelServiceImpl implements ModelService{
     if (!modelRepository.existsById(id)) {
       throw new RecordNotFoundException(id);
     }
-    return ModelMapper.toModelResponse(modelRepository.deleteModelById(id));
+    return ModelMapper.toModelResponse(modelRepository.removeModelById(id));
+  }
+
+  @Override
+  public void validateReleaseYear(Integer year) {
+    if (year > Year.now().getValue()) {
+      throw new InvalidUserInput("Release year can not be higher than current year");
+    }
   }
 }

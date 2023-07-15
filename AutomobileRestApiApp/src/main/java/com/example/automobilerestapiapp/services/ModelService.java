@@ -11,4 +11,6 @@ public interface ModelService {
 
   ModelResponse updateOrSaveNew(StoreModelRequest model, Long id);
   ModelResponse deleteById(Long id);
+
+  void validateReleaseYear(Integer year);
 }

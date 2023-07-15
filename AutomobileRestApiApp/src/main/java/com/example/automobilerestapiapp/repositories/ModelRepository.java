@@ -10,4 +10,5 @@ public interface ModelRepository extends JpaRepository<Model,Long> {
   boolean existsById(Long id);
   Optional<Model> getModelById(Long id);
   Model deleteModelById(Long id);
+  Model removeModelById(Long id);
 }

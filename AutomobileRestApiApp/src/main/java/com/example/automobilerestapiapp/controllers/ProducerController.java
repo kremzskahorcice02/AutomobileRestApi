@@ -2,8 +2,10 @@ package com.example.automobilerestapiapp.controllers;
 
 import com.example.automobilerestapiapp.dtos.ProducerResponse;
 import com.example.automobilerestapiapp.dtos.StoreProducerRequest;
+import com.example.automobilerestapiapp.models.Producer;
 import com.example.automobilerestapiapp.services.ProducerService;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

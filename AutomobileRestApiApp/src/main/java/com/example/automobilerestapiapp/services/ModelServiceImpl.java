@@ -97,5 +97,8 @@ public class ModelServiceImpl implements ModelService{
     if (year > Year.now().getValue()) {
       throw new InvalidUserInput("Release year can not be higher than current year");
     }
+    if (year < 1886) {
+      throw new InvalidUserInput("Release year can not be lower than '1886'");
+    }
   }
 }

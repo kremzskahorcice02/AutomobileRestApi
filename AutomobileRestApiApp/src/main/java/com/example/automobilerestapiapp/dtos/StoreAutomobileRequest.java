@@ -16,13 +16,13 @@ public class StoreAutomobileRequest {
   @NotNull(message = "Field 'modelId' can not be empty")
   private Long modelId;
   @NotBlank(message = "Field 'color' can not be empty")
+  @Pattern(regexp = "^[a-zA-Z]+$", message = "Field 'color' can contain only letters")
   private String color;
   @NotNull(message = "Field 'performance' can not be empty")
   private Float performance;
   @NotNull(message = "Field 'consumption' can not be empty")
   private Float consumption;
   @NotBlank(message = "Field 'dateOfCreation' can not be empty")
-  @Pattern(regexp = "^[0-9-]+$", message = "Field 'dateOfCreation' has to have valid format: yyyy-MM-dd")
   private String dateOfCreation;
   @NotNull(message = "Field 'isDriveable' can not be empty")
   private Boolean isDriveable;

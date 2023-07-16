@@ -1,5 +1,6 @@
 package com.example.automobilerestapiapp.dtos;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -21,6 +22,7 @@ public class StoreModelRequest {
       message = "Field 'street' has to contain letter")
   private String category;
   @NotNull(message = "Field 'minPrice' can not be empty")
+  @Min(value = 1, message = "Field 'minPrice has to be higher or equal to 1")
   private Long minPrice;
   @NotNull(message = "Field 'maxPrice' can not be empty")
   private Long maxPrice;

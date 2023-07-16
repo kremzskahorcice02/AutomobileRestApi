@@ -1,6 +1,8 @@
 package com.example.automobilerestapiapp.advice;
 
 import com.example.automobilerestapiapp.dtos.ErrorResponse;
+import com.example.automobilerestapiapp.exceptions.InvalidDateException;
+import com.example.automobilerestapiapp.exceptions.InvalidUserInput;
 import com.example.automobilerestapiapp.exceptions.RecordNotFoundException;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +52,12 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(value = RecordNotFoundException.class)
-  public ResponseEntity<Object> handleRecordNotFoundException(RecordNotFoundException exception) {
+  public ResponseEntity<ErrorResponse> handleRecordNotFoundException(RecordNotFoundException exception) {
     return new ResponseEntity<>(new ErrorResponse("Could not find record of id: " + exception.getId()), HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(value = {InvalidUserInput.class, InvalidDateException.class})
+  public ResponseEntity<ErrorResponse> handleInvalidDateException(RuntimeException exception) {
+    return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
   }
 }

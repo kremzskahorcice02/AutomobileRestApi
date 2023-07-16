@@ -99,14 +99,15 @@ public class AutomobileServiceImpl implements AutomobileService{
   @Override
   public LocalDate validateDateOfCreation(String date) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    LocalDate parsedDate;
     try {
-      LocalDate localDate = LocalDate.parse(date, formatter);
-      if (localDate.isAfter(LocalDate.now())) {
-        throw new InvalidDateException("Field 'dateOfCreation' can not represent future");
-      }
-      return LocalDate.parse(date, formatter);
+      parsedDate = LocalDate.parse(date, formatter);
     } catch (RuntimeException e) {
-      throw new InvalidDateException("Field 'dateOfCreation' is not valid date");
+      throw new InvalidDateException("Field 'dateOfCreation' has to be valid date in format yyyy-MM-dd");
     }
+    if (parsedDate.isAfter(LocalDate.now()) || parsedDate.isBefore(LocalDate.of(1886,1,29))) {
+      throw new InvalidDateException("Field 'dateOfCreation' can not represent future or be before 1886-01-29");
+    }
+    return parsedDate;
   }
 }

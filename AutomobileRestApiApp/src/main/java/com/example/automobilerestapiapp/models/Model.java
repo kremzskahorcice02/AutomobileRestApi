@@ -60,4 +60,12 @@ public class Model {
     this.releaseYear = newData.getReleaseYear();
     this.isActive = newData.getIsActive();
   }
+
+  public void addNewAutomobile(Automobile auto) {
+    mobilesManufactured.add(auto);
+  }
+
+  public void removeAutomobile(Automobile automobile) {
+    mobilesManufactured.remove(automobile);
+  }
 }

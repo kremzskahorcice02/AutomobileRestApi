@@ -2,6 +2,7 @@ package com.example.automobilerestapiapp.services;
 
 import com.example.automobilerestapiapp.dtos.ModelResponse;
 import com.example.automobilerestapiapp.dtos.StoreModelRequest;
+import com.example.automobilerestapiapp.models.Model;
 import java.util.List;
 
 public interface ModelService {
@@ -11,6 +12,6 @@ public interface ModelService {
 
   ModelResponse updateOrSaveNew(StoreModelRequest model, Long id);
   ModelResponse deleteById(Long id);
-
+  Model getModelEntity(Long id);
   void validateReleaseYear(Integer year);
 }

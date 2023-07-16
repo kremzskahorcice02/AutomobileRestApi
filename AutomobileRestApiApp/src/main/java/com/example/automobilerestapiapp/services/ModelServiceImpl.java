@@ -12,8 +12,6 @@ import com.example.automobilerestapiapp.repositories.ProducerRepository;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -84,10 +82,14 @@ public class ModelServiceImpl implements ModelService{
   }
   @Override
   public ModelResponse deleteById(Long id) {
-    if (!modelRepository.existsById(id)) {
-      throw new RecordNotFoundException(id);
-    }
-    return ModelMapper.toModelResponse(modelRepository.removeModelById(id));
+    Model model = getModelEntity(id);
+    modelRepository.delete(model);
+    return ModelMapper.toModelResponse(model);
+  }
+
+  @Override
+  public Model getModelEntity(Long id) {
+   return modelRepository.getModelById(id).orElseThrow(() -> new RecordNotFoundException(id));
   }
 
   @Override

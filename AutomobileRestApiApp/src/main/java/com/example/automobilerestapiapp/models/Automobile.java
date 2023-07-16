@@ -1,5 +1,7 @@
 package com.example.automobilerestapiapp.models;
 
+import com.example.automobilerestapiapp.dtos.StoreAutomobileRequest;
+import com.example.automobilerestapiapp.dtos.StoreModelRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,8 +20,7 @@ import lombok.Setter;
 public class Automobile {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long Id;
-
+  private Long Id;
   @ManyToOne
   @JoinColumn(name="model_id", nullable=false)
   private Model model;
@@ -27,15 +28,24 @@ public class Automobile {
   private Float performance;
   private Float consumption;
   private LocalDate dateOfCreation;
-  private String isDriveable;
+  private Boolean isDriveable;
 
   public Automobile(Model model, String color, Float performance, Float consumption,
-      LocalDate dateOfCreation, String isDriveable) {
+      LocalDate dateOfCreation, Boolean isDriveable) {
     this.model = model;
     this.color = color;
     this.performance = performance;
     this.consumption = consumption;
     this.dateOfCreation = dateOfCreation;
     this.isDriveable = isDriveable;
+  }
+
+  public void setNewProperties(StoreAutomobileRequest newData, Model model, LocalDate newDateOfCreation) {
+    this.model = model;
+    this.color = newData.getColor();
+    this.performance = newData.getPerformance();
+    this.consumption = newData.getConsumption();
+    this.dateOfCreation = newDateOfCreation;
+    this.isDriveable = newData.getIsDriveable();
   }
 }

@@ -1,6 +1,7 @@
 package com.example.automobilerestapiapp.models;
 
 import com.example.automobilerestapiapp.dtos.StoreModelRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +29,6 @@ public class Model {
   private Long Id;
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="producer_id", nullable=false)
-  @OnDelete(action = OnDeleteAction.CASCADE)
   private Producer producer;
   private String name;
   private String category;
@@ -36,7 +36,7 @@ public class Model {
   private Long maxPrice;
   private Integer releaseYear;
   private Boolean isActive;
-  @OneToMany(fetch = FetchType.LAZY, mappedBy="model")
+  @OneToMany(mappedBy="model", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<Automobile> mobilesManufactured;
 
   public Model(Producer producer, String name, String category, Long minPrice, Long maxPrice,

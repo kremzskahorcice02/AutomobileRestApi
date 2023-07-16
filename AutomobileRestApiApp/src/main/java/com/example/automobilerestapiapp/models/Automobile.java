@@ -3,6 +3,7 @@ package com.example.automobilerestapiapp.models;
 import com.example.automobilerestapiapp.dtos.StoreAutomobileRequest;
 import com.example.automobilerestapiapp.dtos.StoreModelRequest;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +22,7 @@ public class Automobile {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long Id;
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name="model_id", nullable=false)
   private Model model;
   private String color;

@@ -47,7 +47,7 @@ public class ModelController {
     return ResponseEntity.ok().body(modelService.updateOrSaveNew(modelDto,id));
   }
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> deleteModelById(@PathVariable Long id) {
+  public ResponseEntity<ModelResponse> deleteModelById(@PathVariable Long id) {
     return ResponseEntity.ok().body(modelService.deleteById(id));
   }
 }

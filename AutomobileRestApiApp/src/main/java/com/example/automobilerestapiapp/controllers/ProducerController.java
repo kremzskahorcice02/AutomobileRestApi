@@ -1,12 +1,20 @@
 package com.example.automobilerestapiapp.controllers;
 
+import com.example.automobilerestapiapp.dtos.ErrorResponse;
 import com.example.automobilerestapiapp.dtos.ProducerResponse;
 import com.example.automobilerestapiapp.dtos.StoreProducerRequest;
 import com.example.automobilerestapiapp.models.Producer;
 import com.example.automobilerestapiapp.services.ProducerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,21 +39,48 @@ public class ProducerController {
     this.producerService = producerService;
   }
   @GetMapping
+  @Operation(summary = "Get all producers")
+  @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "Success")})
   public ResponseEntity<List<ProducerResponse>> getAllProducers() {
     return ResponseEntity.ok().body(producerService.getAll());
   }
 
   @GetMapping("/{id}")
+  @Operation(summary = "Get a producer by its id")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200",
+          description = "Success"),
+      @ApiResponse(responseCode = "404",
+          description = "Producer of given id was not found",
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = ErrorResponse.class)))
+  })
   public ResponseEntity<ProducerResponse> getProducerById(@PathVariable("id") Long id) {
     return ResponseEntity.ok().body(producerService.getById(id));
   }
 
   @PostMapping(consumes = {"application/json"})
+  @Operation(summary = "Insert new producer")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "201",description = "Success"),
+      @ApiResponse(responseCode = "400", description = "Wrong input format",content = @Content(
+          mediaType = "application/json",
+          array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class))))
+  })
   public ResponseEntity<ProducerResponse> addProducer(@RequestBody @Valid StoreProducerRequest producerDto) {
     return ResponseEntity.status(201).body(producerService.insert(producerDto));
   }
 
   @PutMapping(value = "/{id}", consumes = {"application/json"})
+  @Operation(summary = "Update existing producer by its id (or insert new if does not exist)")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200",description = "Success"),
+      @ApiResponse(responseCode = "400", description = "Wrong input format",
+                  content = @Content(array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))),
+      @ApiResponse(responseCode = "404",
+          description = "Producer of given id was not found",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
   public ResponseEntity<ProducerResponse> replaceOrSaveNewProducer(
       @RequestBody @Valid StoreProducerRequest newProdDto,
       @PathVariable("id") Long id) {
@@ -53,6 +88,14 @@ public class ProducerController {
   }
 
   @DeleteMapping("/{id}")
+  @Operation(summary = "Delete a producer by id")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200",description = "Success"),
+      @ApiResponse(responseCode = "404",
+          description = "Producer of given id was not found",
+          content = @Content(
+              schema = @Schema(implementation = ErrorResponse.class)))
+  })
   public ResponseEntity<ProducerResponse> deleteProducer(@PathVariable("id") Long id) {
     return ResponseEntity.ok().body(producerService.deleteById(id));
   }

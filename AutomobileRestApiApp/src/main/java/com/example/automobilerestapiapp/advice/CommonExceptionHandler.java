@@ -4,6 +4,7 @@ import com.example.automobilerestapiapp.dtos.ErrorResponse;
 import com.example.automobilerestapiapp.exceptions.InvalidDateException;
 import com.example.automobilerestapiapp.exceptions.InvalidUserInput;
 import com.example.automobilerestapiapp.exceptions.RecordNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,28 +26,27 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
   /**
-   * Overrides default behavior of MethodArgumentNotValidException. Collect all errors raised during validation
-   * a returns detailed explanation why each of the errors was thrown.
-   * @param ex the exception to handle
+   * Overrides default behavior of MethodArgumentNotValidException. Collect all errors raised during
+   * validation a returns detailed explanation why each of the errors was thrown.
+   *
+   * @param ex      the exception to handle
    * @param headers the headers to be written to the response
-   * @param status the selected response status
+   * @param status  the selected response status
    * @param request the current request
    * @return Response entity with list of error messages and status code 400
    */
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
       HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-    Map<String, List<String>> body = new HashMap<>();
-
+    List<ErrorResponse> errorList = new ArrayList<>();
     List<String> errors = ex.getBindingResult()
         .getFieldErrors()
         .stream()
         .map(DefaultMessageSourceResolvable::getDefaultMessage)
         .collect(Collectors.toList());
+    errors.forEach(error -> errorList.add(new ErrorResponse(error)));
 
-    body.put("errors", errors);
-
-    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    return ResponseEntity.status(400).body(errorList);
   }
 
   /**

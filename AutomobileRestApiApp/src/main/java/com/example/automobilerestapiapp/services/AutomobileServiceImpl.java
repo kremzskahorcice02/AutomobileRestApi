@@ -45,12 +45,7 @@ public class AutomobileServiceImpl implements AutomobileService{
     return automobileList;
   }
 
-  /**
-   * Fetches an automobile object from repo of given id and converts the object to dto.
-   * @param id the id of the desired automobile
-   * @throws RecordNotFoundException if automobile of given id was not found
-   * @return dto of the automobile with given id
-   */
+
   @Override
   public AutomobileResponse getById(Long id) {
     Automobile auto =  automobileRepository.findById(id).orElseThrow(()->new RecordNotFoundException(id));

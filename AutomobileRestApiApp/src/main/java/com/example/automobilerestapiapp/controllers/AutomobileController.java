@@ -6,6 +6,8 @@ import com.example.automobilerestapiapp.dtos.StoreAutomobileRequest;
 import com.example.automobilerestapiapp.dtos.StoreModelRequest;
 import com.example.automobilerestapiapp.models.Automobile;
 import com.example.automobilerestapiapp.services.AutomobileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/automobiles")
+@Tag(name = "Automobiles")
 public class AutomobileController {
 
   private final AutomobileService automobileService;
@@ -31,28 +34,33 @@ public class AutomobileController {
   }
 
   @GetMapping
+  @Operation(summary = "Get all automobiles")
   public ResponseEntity<List<AutomobileResponse>> getModels() {
     List<AutomobileResponse> allAutomobiles = automobileService.getAll();
     return ResponseEntity.ok().body(allAutomobiles);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<AutomobileResponse> getModelById(@PathVariable Long id) {
+  @Operation(summary = "Get an automobile by its id")
+  public ResponseEntity<AutomobileResponse> getModelById(@PathVariable("id") Long id) {
     return ResponseEntity.ok().body(automobileService.getById(id));
   }
 
   @PostMapping(consumes = {"application/json"})
+  @Operation(summary = "Insert new automobile")
   public ResponseEntity<AutomobileResponse> insertNewModel(@RequestBody @Valid StoreAutomobileRequest autoDto) {
-    return ResponseEntity.ok().body(automobileService.insert(autoDto));
+    return ResponseEntity.status(201).body(automobileService.insert(autoDto));
   }
 
   @PutMapping(value = "/{id}", consumes = {"application/json"})
+  @Operation(summary = "Update an automobile by its id")
   public ResponseEntity<AutomobileResponse> updateModelOrInsertNew(@RequestBody @Valid StoreAutomobileRequest autoDto,
-      @PathVariable Long id) {
+      @PathVariable("id") Long id) {
     return ResponseEntity.ok().body(automobileService.updateOrInsertNew(autoDto, id));
   }
   @DeleteMapping("/{id}")
-  public ResponseEntity<AutomobileResponse> deleteModelById(@PathVariable Long id) {
+  @Operation(summary = "Delete an automobile by its id")
+  public ResponseEntity<AutomobileResponse> deleteModelById(@PathVariable("id") Long id) {
     return ResponseEntity.ok().body(automobileService.deleteById(id));
   }
 }

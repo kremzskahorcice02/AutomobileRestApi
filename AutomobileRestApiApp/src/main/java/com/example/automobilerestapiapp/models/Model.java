@@ -39,6 +39,9 @@ public class Model {
   @OneToMany(mappedBy="model", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<Automobile> mobilesManufactured;
 
+  /**
+   * Constructs populated Model object.
+   */
   public Model(Producer producer, String name, String category, Long minPrice, Long maxPrice,
       Integer releaseYear, Boolean isActive) {
     this.producer = producer;
@@ -51,6 +54,11 @@ public class Model {
     this.mobilesManufactured = new ArrayList<>();
   }
 
+  /**
+   * Updates data of the Model object
+   * @param newData Model dto to update the Model object
+   * @param producer Producer object to be added in manyToOne relationship
+   */
   public void setNewProperties(StoreModelRequest newData, Producer producer) {
     this.producer = producer;
     this.name = newData.getName();
@@ -61,10 +69,18 @@ public class Model {
     this.isActive = newData.getIsActive();
   }
 
+  /**
+   * Adds new Automobile object to the Model object in oneToMany relationship
+   * @param auto Automobile object to be added
+   */
   public void addNewAutomobile(Automobile auto) {
     mobilesManufactured.add(auto);
   }
 
+  /**
+   * Removes Automobile object from the Model object in oneToMany relationship
+   * @param automobile Automobile object to be removed
+   */
   public void removeAutomobile(Automobile automobile) {
     mobilesManufactured.remove(automobile);
   }

@@ -31,6 +31,9 @@ public class Automobile {
   private LocalDate dateOfCreation;
   private Boolean isDriveable;
 
+  /**
+   * Constructs populated Automobile object
+   */
   public Automobile(Model model, String color, Float performance, Float consumption,
       LocalDate dateOfCreation, Boolean isDriveable) {
     this.model = model;
@@ -41,6 +44,12 @@ public class Automobile {
     this.isDriveable = isDriveable;
   }
 
+  /**
+   * Updates data of the Automobile object
+   * @param newData Automobile dto to update the Automobile object
+   * @param model Model object to be added in manyToOne relationship
+   * @param newDateOfCreation localDate value to update the 'dateOfCreation' field of the Automobile
+   */
   public void setNewProperties(StoreAutomobileRequest newData, Model model, LocalDate newDateOfCreation) {
     this.model = model;
     this.color = newData.getColor();

@@ -30,6 +30,7 @@ public class Producer {
   @OneToMany(mappedBy="producer",cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<Model> releasedModels;
 
+
   public Producer(String name, String street, String city, String zipCode, String country) {
     this.name = name;
     this.street = street;
@@ -39,6 +40,10 @@ public class Producer {
     this.releasedModels = new ArrayList<>();
   }
 
+  /**
+   * Updates data of the Producer object
+   * @param newData Producer dto to update the Producer object
+   */
   public void setNewProperties(StoreProducerRequest newData) {
     this.setName(newData.getName());
     this.setStreet(newData.getStreet());
@@ -46,10 +51,19 @@ public class Producer {
     this.setZipCode(newData.getZipCode());
     this.setCountry(newData.getCountry());
   }
+
+  /**
+   * Adds new Model object to the Producer object in oneToMany relationship
+   * @param model Model object to be added
+   */
   public void addNewModel(Model model) {
     this.releasedModels.add(model);
   }
 
+  /**
+   * Removes Model object from the Producer object in oneToMany relationship
+   * @param model Model object to be removed
+   */
   public void removeModel(Model model) {
     this.releasedModels.remove(model);
   }

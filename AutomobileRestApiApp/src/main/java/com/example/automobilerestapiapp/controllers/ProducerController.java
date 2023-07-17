@@ -4,6 +4,7 @@ import com.example.automobilerestapiapp.dtos.ProducerResponse;
 import com.example.automobilerestapiapp.dtos.StoreProducerRequest;
 import com.example.automobilerestapiapp.models.Producer;
 import com.example.automobilerestapiapp.services.ProducerService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/producers", produces = {"application/json"})
+@Tag(name = "Producers")
 public class ProducerController {
 
   private final ProducerService producerService;
@@ -34,24 +36,24 @@ public class ProducerController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ProducerResponse> getProducerById(@PathVariable Long id) {
+  public ResponseEntity<ProducerResponse> getProducerById(@PathVariable("id") Long id) {
     return ResponseEntity.ok().body(producerService.getById(id));
   }
 
   @PostMapping(consumes = {"application/json"})
   public ResponseEntity<ProducerResponse> addProducer(@RequestBody @Valid StoreProducerRequest producerDto) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(producerService.insert(producerDto));
+    return ResponseEntity.status(201).body(producerService.insert(producerDto));
   }
 
   @PutMapping(value = "/{id}", consumes = {"application/json"})
   public ResponseEntity<ProducerResponse> replaceOrSaveNewProducer(
       @RequestBody @Valid StoreProducerRequest newProdDto,
-      @PathVariable Long id) {
+      @PathVariable("id") Long id) {
     return ResponseEntity.ok().body(producerService.updateOrSaveNew(newProdDto,id));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<ProducerResponse> deleteProducer(@PathVariable Long id) {
+  public ResponseEntity<ProducerResponse> deleteProducer(@PathVariable("id") Long id) {
     return ResponseEntity.ok().body(producerService.deleteById(id));
   }
 }

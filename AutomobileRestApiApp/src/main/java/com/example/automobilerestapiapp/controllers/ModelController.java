@@ -64,7 +64,7 @@ public class ModelController {
   @Operation(summary = "Insert new model")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201",description = "Success"),
-      @ApiResponse(responseCode = "400", description = "Wrong input format",content = @Content(
+      @ApiResponse(responseCode = "400", description = "Wrong input data",content = @Content(
           mediaType = "application/json",
           array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))),
       @ApiResponse(responseCode = "404",
@@ -80,7 +80,7 @@ public class ModelController {
   @Operation(summary = "Update a model by its id (or insert new if does not exist)")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200",description = "Success"),
-      @ApiResponse(responseCode = "400", description = "Wrong input format",
+      @ApiResponse(responseCode = "400", description = "Wrong input data",
           content = @Content(array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))),
       @ApiResponse(responseCode = "404",
           description = "Model of given id was not found or producer with id of 'producerId' value was not found",

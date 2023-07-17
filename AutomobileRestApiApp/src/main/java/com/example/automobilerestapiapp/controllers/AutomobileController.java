@@ -1,9 +1,9 @@
 package com.example.automobilerestapiapp.controllers;
 
+import com.example.automobilerestapiapp.dtos.AutomobileDriveAbilityResponse;
 import com.example.automobilerestapiapp.dtos.AutomobileResponse;
 import com.example.automobilerestapiapp.dtos.ErrorResponse;
 import com.example.automobilerestapiapp.dtos.StoreAutomobileRequest;
-import com.example.automobilerestapiapp.models.Automobile;
 import com.example.automobilerestapiapp.services.AutomobileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +64,7 @@ public class AutomobileController {
   @Operation(summary = "Insert new automobile")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201",description = "Success"),
-      @ApiResponse(responseCode = "400", description = "Wrong input format",content = @Content(
+      @ApiResponse(responseCode = "400", description = "Wrong input data",content = @Content(
           mediaType = "application/json",
           array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))),
       @ApiResponse(responseCode = "404",
@@ -82,12 +81,12 @@ public class AutomobileController {
   @Operation(summary = "Update an automobile by its id (or insert new if does not exist)")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200",description = "Success"),
-      @ApiResponse(responseCode = "400", description = "Wrong input format",
+      @ApiResponse(responseCode = "400", description = "Wrong input data",
       content = @Content(array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class)))),
       @ApiResponse(responseCode = "404",
           description = "Automobile of given id was not found or model with id of 'modelId' value was not found",
           content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
-  public ResponseEntity<AutomobileResponse> updateAutomobileOrInsertNew(
+  public ResponseEntity<AutomobileResponse> updateAutomobileOrInsertNew (
       @RequestBody @Valid StoreAutomobileRequest autoDto,
       @PathVariable("id") Long id) {
     return ResponseEntity.ok().body(automobileService.updateOrInsertNew(autoDto, id));
@@ -104,5 +103,13 @@ public class AutomobileController {
   })
   public ResponseEntity<AutomobileResponse> deleteAutomobileById(@PathVariable("id") Long id) {
     return ResponseEntity.ok().body(automobileService.deleteById(id));
+  }
+
+  @GetMapping("/driveable")
+  @Operation(summary = "Count driveable and non driveable automobiles")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200",description = "Success")})
+  public ResponseEntity<AutomobileDriveAbilityResponse> getAutomobileSumsByDriveability() {
+    return ResponseEntity.ok().body(automobileService.countByDriveAbility());
   }
 }

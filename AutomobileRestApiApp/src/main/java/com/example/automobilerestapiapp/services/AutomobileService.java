@@ -1,9 +1,11 @@
 package com.example.automobilerestapiapp.services;
 
+import com.example.automobilerestapiapp.dtos.AutomobileDriveAbilityResponse;
 import com.example.automobilerestapiapp.dtos.AutomobileResponse;
 import com.example.automobilerestapiapp.dtos.StoreAutomobileRequest;
 import com.example.automobilerestapiapp.exceptions.RecordNotFoundException;
 import com.example.automobilerestapiapp.models.Automobile;
+import com.example.automobilerestapiapp.models.Model;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,5 +29,8 @@ public interface AutomobileService {
 
   Automobile getAutomobileEntity(Long id);
 
+  AutomobileDriveAbilityResponse countByDriveAbility();
+
   LocalDate validateDateOfCreation(String date);
+  void validateModelIsActive(Model model);
 }

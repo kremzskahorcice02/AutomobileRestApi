@@ -3,7 +3,10 @@ package com.example.automobilerestapiapp.advice;
 import com.example.automobilerestapiapp.dtos.ErrorResponse;
 import com.example.automobilerestapiapp.exceptions.InvalidDateException;
 import com.example.automobilerestapiapp.exceptions.InvalidUserInput;
+import com.example.automobilerestapiapp.exceptions.ModelNoLongerActiveException;
 import com.example.automobilerestapiapp.exceptions.RecordNotFoundException;
+import jakarta.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
+import java.rmi.server.RemoteObjectInvocationHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,5 +89,10 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = {InvalidUserInput.class, InvalidDateException.class})
   public ResponseEntity<ErrorResponse> handleInvalidDateException(RuntimeException exception) {
     return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(value = {ModelNoLongerActiveException.class})
+  public ResponseEntity<ErrorResponse> handleModelNoLongerActiveException(ModelNoLongerActiveException e) {
+    return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
   }
 }

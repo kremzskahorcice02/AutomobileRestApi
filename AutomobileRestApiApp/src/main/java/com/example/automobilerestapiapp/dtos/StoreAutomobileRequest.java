@@ -6,9 +6,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @AllArgsConstructor
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class StoreAutomobileRequest {
   @NotNull(message = "Field 'modelId' can not be empty")
   @Schema(example = "1")

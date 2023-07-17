@@ -87,6 +87,15 @@ public class AutomobileServiceImpl implements AutomobileService{
   }
 
   /**
+   * Saves a list of Automobiles to the database
+   * @param automobiles list of Automobile objects
+   */
+  @Override
+  public void insertAll(List<Automobile> automobiles) {
+    automobileRepository.saveAll(automobiles);
+  }
+
+  /**
    * Serves for updating automobile object stored in database. It fetches automobile of given id and updates
    * all the fields respectively to the new data object passed as an argument. Before storing the object
    * back to database it provides a validation for field 'dateOfCreation'

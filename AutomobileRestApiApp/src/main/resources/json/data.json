@@ -1,0 +1,18 @@
+[
+  {
+    "modelId": 1,
+    "color": "blue",
+    "performance": 0,
+    "consumption": 0,
+    "dateOfCreation": "2000-02-10",
+    "isDriveable": true
+  },
+  {
+    "modelId": 1,
+    "color": "black",
+    "performance": 0,
+    "consumption": 0,
+    "dateOfCreation": "2000-02-10",
+    "isDriveable": true
+  }
+]

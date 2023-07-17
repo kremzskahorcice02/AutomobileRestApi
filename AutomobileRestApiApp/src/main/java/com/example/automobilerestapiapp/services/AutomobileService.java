@@ -23,6 +23,8 @@ public interface AutomobileService {
 
   AutomobileResponse insert(StoreAutomobileRequest newAuto);
 
+  void insertAll(List<Automobile> automobiles);
+
   AutomobileResponse updateOrInsertNew(StoreAutomobileRequest newAuto, Long id);
 
   AutomobileResponse deleteById(Long id);

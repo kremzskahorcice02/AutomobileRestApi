@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "automobile")
+@Table(name = "automobiles")
 public class Automobile {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

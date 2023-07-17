@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProducerRepository extends JpaRepository<Producer,Long> {
   boolean existsById(Long id);
-
   Optional<Producer> getProducerById(Long id);
 }

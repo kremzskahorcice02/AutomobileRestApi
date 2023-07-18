@@ -4,6 +4,7 @@ import com.example.automobilerestapiapp.dtos.ProducerResponse;
 import com.example.automobilerestapiapp.dtos.StoreProducerRequest;
 import com.example.automobilerestapiapp.exceptions.RecordNotFoundException;
 import com.example.automobilerestapiapp.mappers.ProducerMapper;
+import com.example.automobilerestapiapp.models.Log;
 import com.example.automobilerestapiapp.models.Producer;
 import com.example.automobilerestapiapp.repositories.ProducerRepository;
 import jakarta.transaction.Transactional;
@@ -17,9 +18,12 @@ import org.springframework.stereotype.Service;
 public class ProducerServiceImpl implements ProducerService{
 
   private final ProducerRepository producerRepository;
+
+  private final LogService logService;
   @Autowired
-  public ProducerServiceImpl(ProducerRepository producerRepository) {
+  public ProducerServiceImpl(ProducerRepository producerRepository, LogService logService) {
     this.producerRepository = producerRepository;
+    this.logService = logService;
   }
 
   @Override
@@ -38,6 +42,7 @@ public class ProducerServiceImpl implements ProducerService{
   @Override
   public ProducerResponse insert(StoreProducerRequest updatedProducer) {
     Producer producer = producerRepository.save(ProducerMapper.fromStoreProdRequest(updatedProducer));
+    logService.log(new Log().success().setMessage("New Producer created"));
     return ProducerMapper.toProdResponse(producer);
   }
 
@@ -47,6 +52,7 @@ public class ProducerServiceImpl implements ProducerService{
         .map(prod -> {
           prod.setNewProperties(updatedProducer);
           producerRepository.save(prod);
+          logService.log(new Log().success().setMessage("Producer updated"));
           return ProducerMapper.toProdResponse(prod);
         })
         .orElseGet(() -> insert(updatedProducer));
@@ -56,6 +62,7 @@ public class ProducerServiceImpl implements ProducerService{
   public ProducerResponse deleteById(Long id) {
     Producer producer = getProducerEntity(id);
     producerRepository.delete(producer);
+    logService.log(new Log().success().setMessage("Producer deleted"));
     return ProducerMapper.toProdResponse(producer);
   }
 

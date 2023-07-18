@@ -1,7 +1,6 @@
 package com.example.automobilerestapiapp.models;
 
 import com.example.automobilerestapiapp.dtos.StoreAutomobileRequest;
-import com.example.automobilerestapiapp.dtos.StoreModelRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

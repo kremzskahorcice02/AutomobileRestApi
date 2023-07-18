@@ -5,14 +5,13 @@ import com.example.automobilerestapiapp.exceptions.InvalidDateException;
 import com.example.automobilerestapiapp.exceptions.InvalidUserInput;
 import com.example.automobilerestapiapp.exceptions.ModelNoLongerActiveException;
 import com.example.automobilerestapiapp.exceptions.RecordNotFoundException;
-import jakarta.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
-import java.rmi.server.RemoteObjectInvocationHandler;
+import com.example.automobilerestapiapp.models.Log;
+import com.example.automobilerestapiapp.services.LogService;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,6 +26,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
+
+  private final LogService logService;
+
+  @Autowired
+  public CommonExceptionHandler(LogService logService) {
+    this.logService = logService;
+  }
 
   /**
    * Overrides default behavior of MethodArgumentNotValidException. Collect all errors raised during
@@ -46,9 +52,10 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
         .getFieldErrors()
         .stream()
         .map(DefaultMessageSourceResolvable::getDefaultMessage)
-        .collect(Collectors.toList());
+        .toList();
     errors.forEach(error -> errorList.add(new ErrorResponse(error)));
 
+    logService.log(new Log().notValid());
     return ResponseEntity.status(400).body(errorList);
   }
 
@@ -66,6 +73,7 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     String message = String.format("'%s' should be a valid type '%s' and '%s' isn't",
         name, type, value);
 
+    logService.log(new Log().notValid().setMessage(message));
     return ResponseEntity.badRequest().body(new ErrorResponse(message));
   }
 
@@ -77,7 +85,10 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
    */
   @ExceptionHandler(value = RecordNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleRecordNotFoundException(RecordNotFoundException exception) {
-    return new ResponseEntity<>(new ErrorResponse("Could not find record of id: " + exception.getId()), HttpStatus.NOT_FOUND);
+    String msg = "Could not find record of id: " + exception.getId();
+    logService.log(new Log().notValid().setMessage(msg));
+    return new ResponseEntity<>(new ErrorResponse(msg),
+        HttpStatus.NOT_FOUND);
   }
 
   /**
@@ -88,11 +99,13 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
    */
   @ExceptionHandler(value = {InvalidUserInput.class, InvalidDateException.class})
   public ResponseEntity<ErrorResponse> handleInvalidDateException(RuntimeException exception) {
+    logService.log(new Log().notValid().setMessage(exception.getMessage()));
     return new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(value = {ModelNoLongerActiveException.class})
   public ResponseEntity<ErrorResponse> handleModelNoLongerActiveException(ModelNoLongerActiveException e) {
+    logService.log(new Log().notValid().setMessage(e.getMessage()));
     return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
   }
 }

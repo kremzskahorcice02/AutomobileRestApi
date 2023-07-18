@@ -1,12 +1,12 @@
 package com.example.automobilerestapiapp.controllers;
 
-import com.example.automobilerestapiapp.dtos.AutomobileResponse;
 import com.example.automobilerestapiapp.dtos.ErrorResponse;
 import com.example.automobilerestapiapp.dtos.ModelResponse;
 import com.example.automobilerestapiapp.dtos.StoreModelRequest;
+import com.example.automobilerestapiapp.models.Log;
+import com.example.automobilerestapiapp.services.LogService;
 import com.example.automobilerestapiapp.services.ModelService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,15 +31,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Models")
 public class ModelController {
   private final ModelService modelService;
+
+  private final LogService logService;
   @Autowired
-  public ModelController(ModelService modelService) {
+  public ModelController(ModelService modelService, LogService logService) {
     this.modelService = modelService;
+    this.logService = logService;
   }
 
   @GetMapping
   @Operation(summary = "Get all models")
   @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "Success")})
   public ResponseEntity<List<ModelResponse>> getModels() {
+    logService.log(new Log().info().endpointRequest("/api/automobiles", "GET"));
     List<ModelResponse> models = modelService.getAllModels();
     return ResponseEntity.ok().body(models);
   }
@@ -57,6 +60,7 @@ public class ModelController {
   })
 
   public ResponseEntity<ModelResponse> getModelById(@PathVariable("id") Long id) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/{id}", "GET"));
     return ResponseEntity.ok().body(modelService.getById(id));
   }
 
@@ -73,6 +77,7 @@ public class ModelController {
               schema = @Schema(implementation = ErrorResponse.class)))
   })
   public ResponseEntity<ModelResponse> insertNewModel(@RequestBody @Valid StoreModelRequest modelDto) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles", "POST"));
     return ResponseEntity.status(201).body(modelService.insert(modelDto));
   }
 
@@ -87,6 +92,7 @@ public class ModelController {
           content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
   public ResponseEntity<ModelResponse> updateModelOrInsertNew(@RequestBody @Valid StoreModelRequest modelDto,
       @PathVariable("id") Long id) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/{id}", "PUT"));
     return ResponseEntity.ok().body(modelService.updateOrSaveNew(modelDto,id));
   }
   @DeleteMapping("/{id}")
@@ -99,6 +105,7 @@ public class ModelController {
               schema = @Schema(implementation = ErrorResponse.class)))
   })
   public ResponseEntity<ModelResponse> deleteModelById(@PathVariable("id") Long id) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/{id}", "DELETE"));
     return ResponseEntity.ok().body(modelService.deleteById(id));
   }
 }

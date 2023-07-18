@@ -3,8 +3,10 @@ package com.example.automobilerestapiapp;
 import com.example.automobilerestapiapp.dtos.StoreAutomobileRequest;
 import com.example.automobilerestapiapp.mappers.AutomobileMapper;
 import com.example.automobilerestapiapp.models.Automobile;
+import com.example.automobilerestapiapp.models.Log;
 import com.example.automobilerestapiapp.models.Model;
 import com.example.automobilerestapiapp.services.AutomobileService;
+import com.example.automobilerestapiapp.services.LogService;
 import com.example.automobilerestapiapp.services.ModelService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +28,7 @@ public class AutomobileRestApiAppApplication {
 	}
 
 	@Bean
-	CommandLineRunner runner(AutomobileService automobileService, ModelService modelService) {
+	CommandLineRunner runner(AutomobileService automobileService, ModelService modelService, LogService logService) {
 		return args -> {
 			ObjectMapper mapper = new ObjectMapper();
 			TypeReference<List<StoreAutomobileRequest>> typeReference = new TypeReference<>(){};
@@ -41,9 +43,9 @@ public class AutomobileRestApiAppApplication {
 					automobiles.add(automobile);
 				});
 				automobileService.insertAll(automobiles);
-				System.out.println("Success");
+				logService.log(new Log().success().setMessage("Created new Automobile objects from a file"));
 			} catch (IOException e){
-				System.out.println("Failure: " + e.getMessage());
+				logService.log(new Log().error().setMessage("Error: " + e.getMessage()));
 			}
 		};
 	}

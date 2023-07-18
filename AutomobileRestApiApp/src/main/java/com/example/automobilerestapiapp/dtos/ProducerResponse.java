@@ -1,7 +1,6 @@
 package com.example.automobilerestapiapp.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.security.spec.ECField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

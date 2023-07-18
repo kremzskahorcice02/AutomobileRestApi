@@ -1,6 +1,5 @@
 package com.example.automobilerestapiapp.dtos;
 
-import com.example.automobilerestapiapp.models.Model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

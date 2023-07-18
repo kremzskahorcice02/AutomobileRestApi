@@ -4,7 +4,9 @@ import com.example.automobilerestapiapp.dtos.AutomobileDriveAbilityResponse;
 import com.example.automobilerestapiapp.dtos.AutomobileResponse;
 import com.example.automobilerestapiapp.dtos.ErrorResponse;
 import com.example.automobilerestapiapp.dtos.StoreAutomobileRequest;
+import com.example.automobilerestapiapp.models.Log;
 import com.example.automobilerestapiapp.services.AutomobileService;
+import com.example.automobilerestapiapp.services.LogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,16 +34,20 @@ public class AutomobileController {
 
   private final AutomobileService automobileService;
 
+  private final LogService logService;
   @Autowired
-  public AutomobileController(AutomobileService automobileService) {
+  public AutomobileController(AutomobileService automobileService, LogService logService) {
     this.automobileService = automobileService;
+    this.logService = logService;
   }
 
   @GetMapping
   @Operation(summary = "Get all automobiles")
   @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "Success")})
   public ResponseEntity<List<AutomobileResponse>> getAutomobile() {
+    logService.log(new Log().info().endpointRequest("/api/automobiles", "GET"));
     List<AutomobileResponse> allAutomobiles = automobileService.getAll();
+    logService.log(new Log().success().setMessage(""));
     return ResponseEntity.ok().body(allAutomobiles);
   }
 
@@ -57,6 +63,7 @@ public class AutomobileController {
           schema = @Schema(implementation = ErrorResponse.class)))
   })
   public ResponseEntity<AutomobileResponse> getAutomobileById(@PathVariable("id") Long id) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/{id}", "GET"));
     return ResponseEntity.ok().body(automobileService.getById(id));
   }
 
@@ -74,6 +81,7 @@ public class AutomobileController {
   })
   public ResponseEntity<AutomobileResponse> insertNewAutomobile(
       @RequestBody @Valid StoreAutomobileRequest autoDto) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles", "POST"));
     return ResponseEntity.status(201).body(automobileService.insert(autoDto));
   }
 
@@ -89,6 +97,7 @@ public class AutomobileController {
   public ResponseEntity<AutomobileResponse> updateAutomobileOrInsertNew (
       @RequestBody @Valid StoreAutomobileRequest autoDto,
       @PathVariable("id") Long id) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/{id}", "PUT"));
     return ResponseEntity.ok().body(automobileService.updateOrInsertNew(autoDto, id));
   }
 
@@ -102,6 +111,7 @@ public class AutomobileController {
               schema = @Schema(implementation = ErrorResponse.class)))
   })
   public ResponseEntity<AutomobileResponse> deleteAutomobileById(@PathVariable("id") Long id) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/{id}", "DELETE"));
     return ResponseEntity.ok().body(automobileService.deleteById(id));
   }
 
@@ -110,6 +120,7 @@ public class AutomobileController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200",description = "Success")})
   public ResponseEntity<AutomobileDriveAbilityResponse> getAutomobileSumsByDriveability() {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/driveable", "GET"));
     return ResponseEntity.ok().body(automobileService.countByDriveAbility());
   }
 }

@@ -5,6 +5,7 @@ import com.example.automobilerestapiapp.dtos.StoreModelRequest;
 import com.example.automobilerestapiapp.exceptions.InvalidUserInput;
 import com.example.automobilerestapiapp.exceptions.RecordNotFoundException;
 import com.example.automobilerestapiapp.mappers.ModelMapper;
+import com.example.automobilerestapiapp.models.Log;
 import com.example.automobilerestapiapp.models.Model;
 import com.example.automobilerestapiapp.models.Producer;
 import com.example.automobilerestapiapp.repositories.ModelRepository;
@@ -17,18 +18,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ModelServiceImpl implements ModelService{
-
   private final ModelRepository modelRepository;
-
   private final ProducerRepository producerRepository;
-
   private final ProducerService producerService;
+  private final LogService logService;
 
   @Autowired
-  public ModelServiceImpl(ModelRepository modelRepository, ProducerRepository producerRepository, ProducerService producerService) {
+  public ModelServiceImpl(ModelRepository modelRepository,
+      ProducerRepository producerRepository,
+      ProducerService producerService, LogService logService) {
     this.modelRepository = modelRepository;
     this.producerRepository = producerRepository;
     this.producerService = producerService;
+    this.logService = logService;
   }
 
   @Override
@@ -53,6 +55,7 @@ public class ModelServiceImpl implements ModelService{
     modelRepository.save(model);
     producer.addNewModel(model);
     producerRepository.save(producer);
+    logService.log(new Log().success().setMessage("New Model created"));
 
     return ModelMapper.toModelResponse(model);
   }
@@ -76,6 +79,7 @@ public class ModelServiceImpl implements ModelService{
           model.setNewProperties(updatedModel, currentProducer);
           modelRepository.save(model);
           producerRepository.save(currentProducer);
+          logService.log(new Log().success().setMessage("Model updated"));
 
           return ModelMapper.toModelResponse(model);
         })
@@ -86,6 +90,7 @@ public class ModelServiceImpl implements ModelService{
   public ModelResponse deleteById(Long id) {
     Model model = getModelEntity(id);
     modelRepository.delete(model);
+    logService.log(new Log().success().setMessage("Model deleted"));
     return ModelMapper.toModelResponse(model);
   }
 

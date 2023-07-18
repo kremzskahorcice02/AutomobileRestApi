@@ -8,6 +8,7 @@ import com.example.automobilerestapiapp.exceptions.ModelNoLongerActiveException;
 import com.example.automobilerestapiapp.exceptions.RecordNotFoundException;
 import com.example.automobilerestapiapp.mappers.AutomobileMapper;
 import com.example.automobilerestapiapp.models.Automobile;
+import com.example.automobilerestapiapp.models.Log;
 import com.example.automobilerestapiapp.models.Model;
 import com.example.automobilerestapiapp.repositories.AutomobileRepository;
 import com.example.automobilerestapiapp.repositories.ModelRepository;
@@ -26,13 +27,15 @@ public class AutomobileServiceImpl implements AutomobileService{
   private final ModelRepository modelRepository;
 
   private final ModelService modelService;
+
+  private final LogService logService;
   @Autowired
   public AutomobileServiceImpl(AutomobileRepository automobileRepository,
-      ModelRepository modelRepository,
-      ModelService modelService) {
+      ModelRepository modelRepository,ModelService modelService, LogService logService) {
     this.automobileRepository = automobileRepository;
     this.modelRepository = modelRepository;
     this.modelService = modelService;
+    this.logService = logService;
   }
   @Override
   public List<AutomobileResponse> getAll() {
@@ -57,6 +60,7 @@ public class AutomobileServiceImpl implements AutomobileService{
       model.addNewAutomobile(auto);
       modelRepository.save(model);
       automobileRepository.save(auto);
+      logService.log(new Log().success().setMessage("New Automobile created"));
       return AutomobileMapper.toAutomobileResponse(auto);
   }
   @Override
@@ -83,6 +87,7 @@ public class AutomobileServiceImpl implements AutomobileService{
           auto.setNewProperties(updatedAutomobile, model, newDateOfCreation);
           automobileRepository.save(auto);
           modelRepository.save(model);
+          logService.log(new Log().success().setMessage("Automobile updated"));
 
           return AutomobileMapper.toAutomobileResponse(auto);
         })
@@ -93,6 +98,7 @@ public class AutomobileServiceImpl implements AutomobileService{
   public AutomobileResponse deleteById(Long id) {
     Automobile automobile = getAutomobileEntity(id);
     automobileRepository.delete(automobile);
+    logService.log(new Log().success().setMessage("Automobile deleted"));
     return AutomobileMapper.toAutomobileResponse(automobile);
   }
 

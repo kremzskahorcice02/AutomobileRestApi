@@ -3,7 +3,8 @@ package com.example.automobilerestapiapp.controllers;
 import com.example.automobilerestapiapp.dtos.ErrorResponse;
 import com.example.automobilerestapiapp.dtos.ProducerResponse;
 import com.example.automobilerestapiapp.dtos.StoreProducerRequest;
-import com.example.automobilerestapiapp.models.Producer;
+import com.example.automobilerestapiapp.models.Log;
+import com.example.automobilerestapiapp.services.LogService;
 import com.example.automobilerestapiapp.services.ProducerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,11 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,14 +32,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProducerController {
 
   private final ProducerService producerService;
+
+  private final LogService logService;
   @Autowired
-  public ProducerController(ProducerService producerService) {
+  public ProducerController(ProducerService producerService, LogService logService) {
     this.producerService = producerService;
+    this.logService = logService;
   }
   @GetMapping
   @Operation(summary = "Get all producers")
   @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "Success")})
   public ResponseEntity<List<ProducerResponse>> getAllProducers() {
+    logService.log(new Log().info().endpointRequest("/api/automobiles", "GET"));
     return ResponseEntity.ok().body(producerService.getAll());
   }
 
@@ -57,6 +59,7 @@ public class ProducerController {
               schema = @Schema(implementation = ErrorResponse.class)))
   })
   public ResponseEntity<ProducerResponse> getProducerById(@PathVariable("id") Long id) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/{id}", "GET"));
     return ResponseEntity.ok().body(producerService.getById(id));
   }
 
@@ -69,6 +72,7 @@ public class ProducerController {
           array = @ArraySchema(schema = @Schema(implementation = ErrorResponse.class))))
   })
   public ResponseEntity<ProducerResponse> addProducer(@RequestBody @Valid StoreProducerRequest producerDto) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles", "POST"));
     return ResponseEntity.status(201).body(producerService.insert(producerDto));
   }
 
@@ -84,6 +88,7 @@ public class ProducerController {
   public ResponseEntity<ProducerResponse> replaceOrSaveNewProducer(
       @RequestBody @Valid StoreProducerRequest newProdDto,
       @PathVariable("id") Long id) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/{id}", "PUT"));
     return ResponseEntity.ok().body(producerService.updateOrSaveNew(newProdDto,id));
   }
 
@@ -97,6 +102,7 @@ public class ProducerController {
               schema = @Schema(implementation = ErrorResponse.class)))
   })
   public ResponseEntity<ProducerResponse> deleteProducer(@PathVariable("id") Long id) {
+    logService.log(new Log().info().endpointRequest("/api/automobiles/{id}", "DELETE"));
     return ResponseEntity.ok().body(producerService.deleteById(id));
   }
 }
